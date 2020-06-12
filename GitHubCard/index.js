@@ -6,10 +6,12 @@
 axios
 .get('https://api.github.com/users/tremain-hebert')
   .then((res) => {
-    console.log("Here is your GitHub card: ", res);
+    console.log(`Here is the users GitHub Card: `, res);
+    let builtCard = buildCard(res);
+    cards.appendChild(builtCard);
   })
   .catch((err) => {
-    console.log('There was an error: ', err);
+    console.log(`There was an error: `, err);
   });
 
 /*
@@ -36,8 +38,25 @@ axios
     user, and adding that card to the DOM.
 */
 
-const followersArray = [];
 
+const followersArray = [ 'tetondan',
+  'dustinmyers',
+  'justsml',
+  'luishrd',
+  'bigknell'
+];
+
+for (let i=0; i<followersArray.length; i++){
+axios
+.get(`https://api.github.com/users/${followersArray[i]}`)
+  .then((res) => {
+    console.log(`Here is the users GitHub Card: `, res);
+    cards.appendChild(buildCard(res));
+  })
+  .catch((err) => {
+    console.log(`There was an error: `, err);
+  });
+};
 /*
   STEP 3: Create a function that accepts a single object as its only argument.
     Using DOM methods and properties, create and return the following markup:
@@ -71,49 +90,45 @@ function buildCard(url) {
   let bio = document.createElement('p');
   
   //Classes
-  userImg.src = url.avatar_url;
+  profileLink.setAttribute('href', `${url.data.url}`);
+  userImg.setAttribute('src', url.data.avatar_url);
   newCard.classList.add('card');
   cardInfo.classList.add('card-info');
   name.classList.add('name');
   userName.classList.add('username');
 
-  //Append
-  newCard.append(userImg);
-  newCard.append(cardInfo);
-  cardInfo.append(name);
-  cardInfo.append(userName);
-  cardInfo.append(location);
-  cardInfo.append(profile)
-  profile.append(profileLink);
-  cardInfo.append(followers);
-  cardInfo.append(following);
-  cardInfo.append(bio);
+
 
   //Content
-  name.textContent = url.name;
-  userName.textContent = url.login;
-  location.textContent = `Location: ${url.location}`;
+  name.textContent = `${url.data.name}`;
+  userName.textContent = `${url.data.login}`;
+  location.textContent = `Location: ${url.data.location}`;
   profile.textContent = `Profile: `;
-  profileLink.href = url.url;
-  profileLink.textContent = `${url.url}`;
-  followers.textContent = `Followers: ${url.followers}`;
-  following.textContent = `Following: ${url.following}`;
-  bio.textContent = `Bio: ${url.bio}`;
-
+  profileLink.textContent = `${profileLink.href}`;
+  followers.textContent = `Followers: ${url.data.followers}`;
+  following.textContent = `Following: ${url.data.following}`;
+  bio.textContent = `Bio: ${url.data.bio}`;
+  
+  
+  //Append
+  newCard.appendChild(userImg);
+  newCard.appendChild(cardInfo);
+  cardInfo.appendChild(name);
+  cardInfo.appendChild(userName);
+  cardInfo.appendChild(location);
+  cardInfo.appendChild(profile)
+  profile.appendChild(profileLink);
+  cardInfo.appendChild(followers);
+  cardInfo.appendChild(following);
+  cardInfo.appendChild(bio);
+  
   return newCard;
 }
 
-let cards =document.querySelector('.cards');
+let cards = document.querySelector('.cards');
 
-axios
-.get('https://api.github.com/users/tremain-hebert')
-  .then((res) => {
-    console.log(`Here is the users GitHub Card: `, res);
-    cards.append(buildCard(res));
-  })
-  .catch((err) => {
-    console.log(`There was an error: `, err);
-  });
+
+
 /*
   List of LS Instructors Github username's:
     tetondan
