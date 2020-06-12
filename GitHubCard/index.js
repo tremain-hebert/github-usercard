@@ -3,6 +3,14 @@
     (replacing the placeholder with your Github name):
     https://api.github.com/users/<your name>
 */
+axios
+.get('https://api.github.com/users/tremain-hebert')
+  .then((res) => {
+    console.log("Here is your GitHub card: ", res);
+  })
+  .catch((err) => {
+    console.log('There was an error: ', err);
+  });
 
 /*
   STEP 2: Inspect and study the data coming back, this is YOUR
@@ -49,7 +57,63 @@ const followersArray = [];
       </div>
     </div>
 */
+function buildCard(url) {
+  let newCard = document.createElement('div');
+  let userImg = document.createElement('img');
+  let cardInfo = document.createElement('div');
+  let name = document.createElement('h3');
+  let userName = document.createElement('p');
+  let location = document.createElement('p');
+  let profile = document.createElement('p');
+  let profileLink = document.createElement('a');
+  let followers = document.createElement('p');
+  let following = document.createElement('p');
+  let bio = document.createElement('p');
+  
+  //Classes
+  userImg.src = url.avatar_url;
+  newCard.classList.add('card');
+  cardInfo.classList.add('card-info');
+  name.classList.add('name');
+  userName.classList.add('username');
 
+  //Append
+  newCard.append(userImg);
+  newCard.append(cardInfo);
+  cardInfo.append(name);
+  cardInfo.append(userName);
+  cardInfo.append(location);
+  cardInfo.append(profile)
+  profile.append(profileLink);
+  cardInfo.append(followers);
+  cardInfo.append(following);
+  cardInfo.append(bio);
+
+  //Content
+  name.textContent = url.name;
+  userName.textContent = url.login;
+  location.textContent = `Location: ${url.location}`;
+  profile.textContent = `Profile: `;
+  profileLink.href = url.url;
+  profileLink.textContent = `${url.url}`;
+  followers.textContent = `Followers: ${url.followers}`;
+  following.textContent = `Following: ${url.following}`;
+  bio.textContent = `Bio: ${url.bio}`;
+
+  return newCard;
+}
+
+let cards =document.querySelector('.cards');
+
+axios
+.get('https://api.github.com/users/tremain-hebert')
+  .then((res) => {
+    console.log(`Here is the users GitHub Card: `, res);
+    cards.append(buildCard(res));
+  })
+  .catch((err) => {
+    console.log(`There was an error: `, err);
+  });
 /*
   List of LS Instructors Github username's:
     tetondan
